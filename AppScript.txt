@@ -1,0 +1,87 @@
+var sheet_id =  "1XwtfjPK_up2pcKkgiTbqnzolLjL1ffy3BNcBEdpLHyo";
+  var ss = SpreadsheetApp.openById(sheet_id);
+ 
+function doGet(e) {
+
+ var c= e.parameter.cmd;
+ 
+ if (c=="set_user"){
+   var sheet_name = "Password";
+   var sheet = ss.getSheetByName(sheet_name);
+   var set_u= e.parameter.set_username;
+   var set_p= e.parameter.set_pass;
+   ss.insertSheet(set_u);
+  var sht = ss.getSheetByName(set_u);
+  sht.appendRow(["prev_balance","debit","credit","current balance"]);
+  var b = 15000;
+
+   sheet.appendRow([set_u,set_p,b]);
+ }
+
+ if (c=="get_un"){
+   var sheet_name = "Password";
+   var sheet = ss.getSheetByName(sheet_name);
+   var user= e.parameter.user;
+    var end = sheet.getLastRow();
+    for (var u =2; u<=end;u=u+1){
+      if (user==sheet.getRange("A"+String(u)).getValue()){
+          var un = u;
+          return ContentService.createTextOutput(un);
+      }
+    }
+    un="no user";
+    return ContentService.createTextOutput(un);
+
+ }
+
+
+  if (c=="user_pass"){
+   var sheet_name = "Password";
+   var sheet = ss.getSheetByName(sheet_name);
+
+     var read_no = e.parameter.un;
+     lis = sheet.getRange(Number(read_no),1,1,2).getValues();
+    username = lis[0][0];
+    password = lis[0][1];
+      Logger.log(String(username)+" "+String(password));
+    pass = String(username)+" "+String(password)
+    return ContentService.createTextOutput(pass);
+  }
+
+   if (c=="get_bal"){
+   var sheet_name = "Password";
+     var read_no = e.parameter.un;
+   var sheet = ss.getSheetByName(sheet_name);
+   var bal = sheet.getRange('C'+String(read_no)).getValue();
+   return ContentService.createTextOutput(bal);
+  }
+
+   if (c=="send"){
+     var user= e.parameter.user;
+      var sheet_name = "summary";
+   var sheet = ss.getSheetByName(user);
+   var prev_b= e.parameter.prev_b;
+  var debited= e.parameter.debited;
+   var credited= e.parameter.credited;
+    var current_b= e.parameter.current_b;
+    sheet.appendRow([prev_b,debited,credited,current_b]);
+
+  }
+
+   if (c=="up_bal"){
+   var sheet_name = "Password";
+   var read_no = e.parameter.un;
+   var sheet = ss.getSheetByName(sheet_name);
+   var bal = e.parameter.bal;
+   sheet.getRange('C'+String(read_no)).setValue(bal);
+  }
+
+   if (c=="up_pass"){
+   var sheet_name = "Password";
+   var read_no = e.parameter.un;
+   var sheet = ss.getSheetByName(sheet_name);
+   var new_p = e.parameter.new_p;
+   sheet.getRange('B'+String(read_no)).setValue(new_p);
+  }
+ 
+}
